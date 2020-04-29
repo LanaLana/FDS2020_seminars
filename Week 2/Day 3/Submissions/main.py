@@ -18,7 +18,7 @@ def main():
     
     X_train, y_train, X_test, y_test = build_dataset(args.data_dir)
     
-    for model_name in ["dask_xgboost"]: #, "xgboost"]:
+    for model_name in ["xgboost", "dask_xgboost"]: # "dask_xgboost"
         clf = Classifiers(model_name, (X_train, y_train, X_test, y_test))
         clf.run_clf()
         

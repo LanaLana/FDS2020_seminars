@@ -79,7 +79,8 @@ class Classifiers():
         train_time_dif = time.time() - time_start
         predictions = dask_ml.xgboost.predict(client, clf, X_test)
         mse = mean_absolute_error(predictions.compute(), y_test)
-
+        
+        print("For dask_model mse is ", mse, ", train_time is ", train_time_dif)
         return mse, train_time_dif, grid_time_dif
     
     def simple_model(self):
@@ -104,7 +105,9 @@ class Classifiers():
         test_dmatrix = xgb.DMatrix(X_test, y_test)
         preds = best_clf.predict(test_dmatrix)
         mae = mean_absolute_error(y_test, preds)
-
+        
+        print("For simple_model mse is ", mse, ", train_time is ", train_time_dif)
+        
         return mae, train_time_dif, grid_time_dif
 
 
