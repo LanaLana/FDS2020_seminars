@@ -42,23 +42,6 @@ class Classifiers():
                              " grid search time: " + str(round(grid_search_time), 3)])
                 
     def dask_model(self):
-        '''
-        cluster = make_cluster()
-        cluster
-
-        client = Client(cluster)
-        client
-        
-        X_train, y_train, X_test, y_test = self.dataset
-        time_start = time.time()
-        clf = dask_ml.xgboost.train(client, params, X_train, y_train)
-        train_time_dif = time.time() - time_start
-        predictions = dask_ml.xgboost.predict(client, clf, X_test)
-        mse = mean_squared_error(predictions.compute(), y_test)
-
-        return mse, train_time_dif, grid_time_dif
-        '''
-        
         cluster = make_cluster()
         cluster
 
@@ -74,13 +57,16 @@ class Classifiers():
         grid_clf.fit(X_train, y_train)
         grid_time_dif = time.time() - time_start
         
-        time_start = time.time()
-        clf = dask_ml.xgboost.train(client, params, X_train, y_train)
-        train_time_dif = time.time() - time_start
-        predictions = dask_ml.xgboost.predict(client, clf, X_test)
-        mse = mean_absolute_error(predictions.compute(), y_test)
+        #grid_clf.cv_results_.mean_test_score
+        #best_params=???
         
-        print("For dask_model mse is ", mse, ", train_time is ", train_time_dif)
+        time_start = time.time()
+        clf = dask_ml.xgboost.train(client, best_params, X_train, y_train)
+        train_time_dif = time.time() - time_start
+        predictions = dask_ml.xgboost.predict(client, clf, X_test) # ? best param
+        mae = mean_absolute_error(predictions.compute(), y_test)
+        
+        print("For dask_model mse is ", mae, ", train_time is ", train_time_dif)
         return mse, train_time_dif, grid_time_dif
     
     def simple_model(self):
