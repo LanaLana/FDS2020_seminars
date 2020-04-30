@@ -1,0 +1,2 @@
+dask_xgboost,   error: 4.227, training time: 120.383, grid search time: 59.537
+xgboost,   error: 7.454, training time: 7.004, grid search time: 96.15
