@@ -70,36 +70,6 @@ class Classifiers():
         print("For dask_model mae is ", mae, ", train_time is ", train_time_dif)
         return mae, train_time_dif, grid_time_dif
 
-       '''           
-    def dask_model(self):
-        cluster = make_cluster()
-        cluster
-
-        client = Client(cluster)
-        client
-        
-        X_train, y_train, X_test, y_test = self.dataset
-        
-        # search parameters
-        grid_values = {'max_depth': [3, 4, 5], 'learning_rate':[0.1, 0.01, 0.05]}
-        clf = dask_ml.xgboost.XGBRegressor()
-        grid_clf = GridSearchCV(clf, param_grid = grid_values,scoring="neg_mean_squared_error", cv=3, n_jobs=2)
-        #dask_ml.model_selection.GridSearchCV(clf, param_grid=grid_values, n_jobs=2)
-        time_start = time.time()
-        grid_clf.fit(X_train, y_train)
-        grid_time_dif = time.time() - time_start
-        
-        best_params=grid_clf.best_params_ 
-        
-        time_start = time.time()
-        best_clf = clf.fit(client, best_params, X_train, y_train)
-        train_time_dif = time.time() - time_start
-        predictions = best_clf.predict(client, clf, X_test) 
-        mae = mean_absolute_error(y_test, predictions.compute())
-        
-        print("For dask_model mae is ", mae, ", train_time is ", train_time_dif)
-        return mae, train_time_dif, grid_time_dif
-    '''
     def simple_model(self):
         X_train, y_train, X_test, y_test = self.dataset
         data_dmatrix = xgb.DMatrix(X_train, y_train)
