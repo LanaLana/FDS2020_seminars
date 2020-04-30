@@ -45,16 +45,25 @@ def flights(url = "https://storage.googleapis.com/dask-tutorial-data/nycflights.
 
     print("** Finished! **")
 
-def build_dataset(data_dir='data'):
+def build_dataset(data_dir='data', fill_nan=False, one_hot_encod=False):
     filenames = glob('./{}/nycflights/*.csv'.format(data_dir))
     dataframes = [pd.read_csv(f) for f in filenames]
 
     frame = pd.concat(dataframes, axis=0, ignore_index=True)
     
-    frame = frame.dropna()
-    frame = frame.select_dtypes(['number'])
-
-    frame = frame.sample(frac=1) # shuffle
+    if fill_nan:
+        print("Not implemented") # should be written
+        pass
+    else:
+        frame = frame.dropna()
+      
+    if one_hot_encod:
+        print("Not implemented") # should be written
+        pass
+    else:
+        frame = frame.select_dtypes(['number'])
+        
+    frame = frame.sample(frac=1)
     train, test = train_test_split(frame, test_size=0.2)
 
     # separate features and target
