@@ -5,6 +5,8 @@ import dask_ml.xgboost
 import pandas as pd
 import numpy as np
 import dask.dataframe as dd
+from dask.distributed import Client
+import dask_ml.model_selection
 from scipy_utils import make_cluster
 import time
 import os
@@ -28,7 +30,7 @@ class Classifiers():
         if self.name == "xgboost":
             accuracy, training_time, grid_search_time = self.simple_model()
         elif self.name == "dask_xgboost":
-            self.dataset = df2dd(self.dataset)
+            self.dataset = self.df2dd()
             accuracy, training_time, grid_search_time = self.dask_model()
         
         if "stat_file.csv" in os.listdir("./"):
@@ -38,8 +40,8 @@ class Classifiers():
         with open("stat_file.csv", open_mode, newline ='') as f:
             Writer = csv.writer(f)  
             Writer.writerow([self.name, "   error: " + str(round(accuracy, 3)), \
-                             " training time: "+str(round(training_time), 3), \
-                             " grid search time: " + str(round(grid_search_time), 3)])
+                             " training time: "+str(round(training_time, 3)), \
+                             " grid search time: " + str(round(grid_search_time, 3))])
                 
     def dask_model(self):
         cluster = make_cluster()
@@ -51,7 +53,7 @@ class Classifiers():
         X_train, y_train, X_test, y_test = self.dataset
         
         # search parameters
-        grid_values = {'max_depth': [3, 5], 'learning_rate':[0.05, 0.1]}
+        grid_values = {'max_depth': [3, 4, 5], 'learning_rate':[0.1, 0.01, 0.05]}
         clf = xgb.XGBRegressor(objective ='reg:squarederror', n_estimators = 10)
         grid_clf = dask_ml.model_selection.GridSearchCV(clf, param_grid=grid_values, n_jobs=2)
         time_start = time.time()
